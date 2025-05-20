@@ -27,3 +27,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProductImage(models.Model):
+    url = models.CharField(max_length=100, default="")
+    is_main = models.BooleanField(default=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
