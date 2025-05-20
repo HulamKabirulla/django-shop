@@ -14,10 +14,9 @@ def contact(request):
 
 def productsbycategory(request, category):
     categories = Category.objects.prefetch_related('subcategories')
-    categoryCurrent = Category.objects.filter(url=category)[:1][0]
-    products = Product.objects.prefetch_related('images').filter(category=categoryCurrent.id,images__is_main=True)
-    for image in products[0].images.all():
-        print(image.url)
+    products = (Product.objects.select_related('category').prefetch_related('images').
+                filter(category__url=category,images__is_main=True))
+
     return render(request, 'main/shop.html', {'categories': categories, 'products': products})
 
 def productsbysubcategory(request, category,subcategory):
