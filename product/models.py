@@ -23,6 +23,9 @@ class Product(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL,null=True,
+    blank=True,
+    default=None)
     url = models.CharField(max_length=100, default="")
 
     def __str__(self):
@@ -33,3 +36,11 @@ class ProductImage(models.Model):
     url = models.CharField(max_length=100, default="")
     is_main = models.BooleanField(default=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+
+class SubcategoryFilters(models.Model):
+    name = models.CharField(max_length=100)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
+
+class SubcategoryFiltersValues(models.Model):
+    name = models.CharField(max_length=100)
+    subcategoryFilters = models.ForeignKey(SubcategoryFilters, on_delete=models.CASCADE, related_name='subcategoryFiltersValues')
