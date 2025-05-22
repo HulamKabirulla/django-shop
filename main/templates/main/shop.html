@@ -69,8 +69,8 @@
                         </div>
                         {% for filterValue in filter.subcategoryFiltersValues.all %}
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-1">
-                            <label class="custom-control-label" for="color-1">{{filterValue.name}}</label>
+                            <input type="checkbox" class="custom-control-input" id="color-{{ filterValue.id }}">
+                            <label class="custom-control-label" for="color-{{ filterValue.id }}">{{filterValue.name}}</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
                         {% endfor %}

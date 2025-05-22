@@ -26,11 +26,17 @@ SECRET_KEY = 'django-insecure-%#x4onh@shis(fz3acthktqtwja_21515&!wu*!am&rg^j77ei
 DEBUG = True
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'buyer.Buyers'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'buyer',
     'main',
     'product',
     'django.contrib.admin',

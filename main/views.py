@@ -39,9 +39,4 @@ def productsbysubcategory(request, category,subcategory):
     subcategoryFilters=(SubcategoryFilters.objects.
                         prefetch_related('subcategoryFiltersValues').
                         filter(subcategory=currentSubCategory))
-    for subcategoryFiltersValues in subcategoryFilters:
-        print(subcategoryFiltersValues.name)
-        for value_obj in subcategoryFiltersValues.subcategoryFiltersValues.all():
-            print(f"  Значение: {value_obj.name}")
-        print("____________")
     return render(request, 'main/shop.html', {'categories': categories, 'products': products, 'filters': subcategoryFilters})
