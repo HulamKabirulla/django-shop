@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from product.models import (Category, Subcategory, Product,
-                            ProductImage, SubcategoryFilters, SubcategoryFiltersValues)
+                            ProductImage, SubcategoryFilters, SubcategoryFiltersValues, ProductFilters)
 
 
 # Create your views here.
@@ -12,11 +12,13 @@ def index(request):
 def contact(request):
     categories = Category.objects.prefetch_related('subcategories')
     return render(request, 'main/contact.html', {'categories': categories})
-
+#Finished here
 def singleProduct(request, productUrl):
     categories = Category.objects.prefetch_related('subcategories')
     product = (Product.objects.prefetch_related('images').
                filter(url=productUrl).order_by('images__is_main'))
+    productFilters = ProductFilters.objects.get(product_id=product.first().id)
+    print(productFilters.subcategoryFiltersValues.name)
     return render(request, 'main/detail.html', {'categories': categories,
                                                 'product': product})
 

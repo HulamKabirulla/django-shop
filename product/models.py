@@ -44,3 +44,13 @@ class SubcategoryFilters(models.Model):
 class SubcategoryFiltersValues(models.Model):
     name = models.CharField(max_length=100)
     subcategoryFilters = models.ForeignKey(SubcategoryFilters, on_delete=models.CASCADE, related_name='subcategoryFiltersValues')
+
+class GroupProductFilters(models.Model):
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+    is_available = models.BooleanField(default=True)
+
+class ProductFilters(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    subcategoryFilters = models.ForeignKey(SubcategoryFilters, on_delete=models.CASCADE)
+    subcategoryFiltersValues = models.ForeignKey(SubcategoryFiltersValues, on_delete=models.CASCADE)
+    groupProductFilters = models.ForeignKey(GroupProductFilters, on_delete=models.CASCADE)
