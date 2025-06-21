@@ -43,30 +43,26 @@
                     </div>
                     <small class="pt-1">(50 Reviews)</small>
                 </div>
-                <h3 class="font-weight-semi-bold mb-4">${{productSingle.price}}</h3>
+                {% if productFilters %}
+                    <h3 class="font-weight-semi-bold mb-4" style="color: red" id="chooseFilterText">Choose "{{ productFilters.0.0.subcategoryFilters.name }}" to see the price</h3>
+                {% else %}
+                    <h3 class="font-weight-semi-bold mb-4">${{productSingle.price}}</h3>
+                {% endif %}
                 <p class="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit clita ea. Sanc invidunt ipsum et, labore clita lorem magna lorem ut. Erat lorem duo dolor no sea nonumy. Accus labore stet, est lorem sit diam sea et justo, amet at lorem et eirmod ipsum diam et rebum kasd rebum.</p>
-
-
-
-
-
-
-
-
                 {% for group_key, filters in productFilters.items %}
                     {% for filter in filters %}
                         {% if forloop.first %}
                             <div class="d-flex mb-3">
-                                <p class="text-dark font-weight-medium mb-0 mr-3">{{ filter.subcategoryFilters.name }}:</p>
-                                <form>
+                                <form class="subcategoryFiltersValuesForm">
+                                    <p class="text-dark font-weight-medium mb-0 mr-3" id="{{ filter.subcategoryFilters.id }}subcategoryFilters">{{ filter.subcategoryFilters.name }}:</p>
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" id="size-1" name="size">
-                                        <label class="custom-control-label" for="size-1">{{ filter.subcategoryFiltersValues.name }}</label>
+                                        <input type="radio" class="custom-control-input subcategoryFiltersValuesInput" id="{{ filter.subcategoryFiltersValues.id }}subcategoryFiltersValues" name="size" value="{{ filter.subcategoryFilters.id }};{{ filter.subcategoryFiltersValues.id }}">
+                                        <label class="custom-control-label" for="{{ filter.subcategoryFiltersValues.id }}subcategoryFiltersValues">{{ filter.subcategoryFiltersValues.name }}</label>
                                     </div>
                         {% else %}
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id="size-1" name="size">
-                                <label class="custom-control-label" for="size-1">{{ filter.subcategoryFiltersValues.name }}</label>
+                                <input type="radio" class="custom-control-input subcategoryFiltersValuesClass" id="size-{{ filter.subcategoryFiltersValues.id }}" value="{{ filter.subcategoryFilters.id }};{{ filter.subcategoryFiltersValues.id }}" name="size">
+                                <label class="custom-control-label" for="size-{{ filter.subcategoryFiltersValues.id }}">{{ filter.subcategoryFiltersValues.name }}</label>
                             </div>
                         {% endif %}
 
@@ -382,4 +378,57 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+    <script type="text/javascript">
+        function checkFiltersValuesIsFilled() {
+            firstText = "";
+            selectedValuesProperties = "{";
+            selectedValuesSettings = "{";
+            $('.subcategoryFiltersValuesForm').each(function() {
+            allValid = true;
+                    const $checkedRadio = $(this).find('input[type="radio"]:checked');
+
+              // Ищем выбранный radio внутри конкретной формы
+              if ($(this).find('input[type="radio"]:checked').length === 0) {
+                allValid = false;
+                // Можно, например, выделить форму цветом или вывести сообщение
+                $(this).css('border', '2px solid red');
+                if(firstText === "")
+                {
+                    firstText = $(this).find('*:first').text().trim().slice(0, -1);
+                    $("#chooseFilterText").text("Choose \""+firstText+"\" to see the price");
+                }
+              } else {
+                $(this).css('border', ''); // убираем выделение, если radio выбран
+                checkedRadioVal=$checkedRadio.val();
+                property=checkedRadioVal.split(";")[0];
+                setting=checkedRadioVal.split(";")[1];
+
+                selectedValuesProperties+=property+",";
+                selectedValuesSettings+=setting+",";
+                //alert(property+" "+setting);
+              }
+            });
+
+            if (allValid) {
+              // Все формы валидны
+              //alert("Все формы заполнены корректно.");
+              //window.location.href = 'https://example.com';
+              selectedValuesProperties = selectedValuesProperties.slice(0, -1);  // удалит последний символ
+              selectedValuesSettings = selectedValuesSettings.slice(0, -1);  // удалит последний символ
+
+              selectedValuesProperties+="}";
+              selectedValuesSettings+="}";
+              console.log(selectedValuesProperties);
+              console.log(selectedValuesSettings);
+              const redirectUrl = `/ps/?properties=`+selectedValuesProperties+`&settings=`+selectedValuesSettings;
+              window.location.href = redirectUrl;
+            }
+        }
+        $(document).ready(function() {
+            checkFiltersValuesIsFilled();
+            $('.subcategoryFiltersValuesForm input[type="radio"]').on('change', function() {
+              checkFiltersValuesIsFilled();
+            });
+        });
+    </script>
 {% endblock %}
