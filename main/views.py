@@ -1,7 +1,7 @@
 from collections import defaultdict
 from contextlib import nullcontext
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from product.models import (Category, Subcategory, Product,
                             ProductImage, SubcategoryFilters, SubcategoryFiltersValues, ProductFilters,GroupProductFilters)
@@ -134,5 +134,4 @@ def getProductByPropsAndSettings(request):
 
     required_SubCategoryFiltersId = ast.literal_eval(request.GET.get('properties'))
     print(required_SubCategoryFiltersId)
-    return render(request, 'main/shop.html',
-                      {})
+    return JsonResponse(priceOfProduct,safe=False)

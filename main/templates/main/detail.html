@@ -46,7 +46,7 @@
                 {% if productFilters %}
                     <h3 class="font-weight-semi-bold mb-4" style="color: red" id="chooseFilterText">Choose "{{ productFilters.0.0.subcategoryFilters.name }}" to see the price</h3>
                 {% else %}
-                    <h3 class="font-weight-semi-bold mb-4">${{productSingle.price}}</h3>
+                    <h3 class="font-weight-semi-bold mb-4" style="color:green;text-decoration:underline">   {{productSingle.price}}£</h3>
                 {% endif %}
                 <p class="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit clita ea. Sanc invidunt ipsum et, labore clita lorem magna lorem ut. Erat lorem duo dolor no sea nonumy. Accus labore stet, est lorem sit diam sea et justo, amet at lorem et eirmod ipsum diam et rebum kasd rebum.</p>
                 {% for group_key, filters in productFilters.items %}
@@ -383,8 +383,8 @@
             firstText = "";
             selectedValuesProperties = "{";
             selectedValuesSettings = "{";
-            $('.subcategoryFiltersValuesForm').each(function() {
             allValid = true;
+            $('.subcategoryFiltersValuesForm').each(function() {
                     const $checkedRadio = $(this).find('input[type="radio"]:checked');
 
               // Ищем выбранный radio внутри конкретной формы
@@ -420,8 +420,23 @@
               selectedValuesSettings+="}";
               console.log(selectedValuesProperties);
               console.log(selectedValuesSettings);
-              const redirectUrl = `/ps/?properties=`+selectedValuesProperties+`&settings=`+selectedValuesSettings;
-              window.location.href = redirectUrl;
+              const redirectUrl = `?properties=`+selectedValuesProperties+`&settings=`+selectedValuesSettings;
+              //window.location.href = redirectUrl;
+              history.pushState(null, '', redirectUrl);
+              $.ajax({
+                url: '/ps'+redirectUrl,
+                type: 'GET',
+                success: function(response) {
+                    $("#chooseFilterText").css("color","green");
+                    $("#chooseFilterText").css("text-decoration","underline");
+                    $("#chooseFilterText").text(response+"£");
+                    console.log('Ответ:', response);           // весь ответ
+                    console.log('Сообщение:', response.message); // конкретное поле
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка:', error);
+                }
+            });
             }
         }
         $(document).ready(function() {
